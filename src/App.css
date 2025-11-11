@@ -1,0 +1,12 @@
+:root {
+  --bg: #1a1a1a;
+  /* --fg: #fdfdfd; */
+}
+
+* {
+  color-scheme: dark;
+}
+
+body {
+  background-color: var(--bg);
+}
