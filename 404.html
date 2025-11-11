@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Redirecting...</title>
+    <script type="text/javascript">
+      // File based on: https://github.com/rafgraph/spa-github-pages
+      // Note: this 404.html file must be at least 512 bytes for it to work in IE
+
+      // Edit this string to match your base route. It's really the '/' positions that matter.
+      // Examples:
+      // - https://site.com/
+      // - http://www.domain.net/home/
+      const examplePath = 'https://gmferise.github.io/site/';
+
+      // Use decodeURIComponent on the redirect query param in your SPA to get the new path!
+
+      window.location.replace(generateRedirect(window.location, examplePath));
+
+      function generateRedirect(location, example) {
+        const pathSegmentsToKeep = example.split('/').length - 4;
+        let { protocol, hostname, port, pathname, search, hash } = location;
+        port = port ? `:${port}` : ''
+        const basePath = pathname.split('/').slice(0, 1 + pathSegmentsToKeep).join('/')
+        const routedPath = pathname.slice(1).split('/').slice(pathSegmentsToKeep).join('/')
+        return `${protocol}//${hostname}${port}${basePath}/?redirect=${encodeURIComponent('/' + routedPath + search + hash)}`
+      }
+      
+    </script>
+  </head>
+  <body>
+  </body>
+</html>
