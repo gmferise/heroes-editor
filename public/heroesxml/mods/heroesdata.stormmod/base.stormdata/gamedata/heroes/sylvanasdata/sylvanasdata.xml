@@ -2,7 +2,7 @@
 <Catalog>
   <const id="$SylvanasUnrelentingTormentDamageModifier" value="0.2" />
   <const id="$SylvanasLifeDrainLeechModifier" value="0.15" />
-  <const id="$SylvanasBlackArrowsPinnacleLeechValue" value="0.5" />
+  <const id="$SylvanasBlackArrowsPinnacleLeechValue" value="0.25" />
   <const id="$SylvanasBlackArrowsPinnacleLeechDataModifier" value="-($SylvanasBlackArrowsPinnacleLeechValue $SylvanasLifeDrainLeechModifier)" evaluateAsExpression="1" />
   <CAbilEffectInstant id="SylvanasBlackArrowsPassive">
     <Flags index="Transient" value="1" />
@@ -1613,7 +1613,7 @@
     <Behavior value="SylvanasUnfurlingShadowsQuestMilestone" />
   </CEffectApplyBehavior>
   <CEffectSwitch id="SylvanasLostSoulModifyCooldownSwitch">
-    <ValidatorArray value="SylvanasTargetHas3StacksOfBlackArrowsStackingBehaviorAndTargetIsValidUnitType" />
+    <ValidatorArray value="SylvanasTargetHas3StacksOfBlackArrowsStackingBehaviorAndTargetIsNotMinionOrHero" />
     <ValidatorArray value="CasterNotBlindedAndTargetNotEvading" />
     <ValidatorArray value="HasSylvanasShadowDaggerLostSoul" />
     <CaseArray Validator="TargetIsHero" Effect="SylvanasShadowDaggerLostSoulModifyCooldownHero" />
@@ -1894,6 +1894,7 @@
     <LeechFlatModifierArray index="LifeDrainWithPinnacle" Validator="SylvanasHasLifeDrainAndPinnacleComplete" Modifier="$SylvanasLifeDrainLeechModifier" />
     <LeechFlatModifierArray index="LifeDrainHero" Validator="SylvanasLifeDrainTargetIsHeroLeechCombine" Modifier="$SylvanasLifeDrainLeechModifier" />
     <LeechFlatModifierArray index="BlackArrowsPinnacle" Validator="SylvanasBlackArrowsLeechPinnacleCombine" Modifier="$SylvanasBlackArrowsPinnacleLeechDataModifier" />
+    <LeechFlatModifierArray index="BlackArrowsPinnacleHero" Validator="SylvanasBlackArrowsLeechPinnacleCombineHero" Modifier="$SylvanasBlackArrowsPinnacleLeechValue" />
     <SourceButtonFace value="SylvanasRemorselessTalent" />
   </CEffectDamage>
   <CEffectSet id="SylvanasWitheringFireImpactSetRemorseless">
@@ -2007,8 +2008,7 @@
     <VitalFractionMax index="Life" value="0.01" />
   </CEffectDamage>
   <CEffectModifyTokenCount id="SylvanasShadowDaggerUnfurlingShadowsModifyTokenCount" parent="BaseEffectModifyTokenCount">
-    <ValidatorArray value="SylvanasTargetHas3StacksOfBlackArrowsStackingBehavior" />
-    <ValidatorArray value="SylvanasBlackArrowsQuestTargetIsValidUnitType" />
+    <ValidatorArray value="SylvanasTargetHas3StacksOfBlackArrowsStackingBehaviorAndTargetIsNotMinionOrHero" />
     <EffectCategory index="Quest" value="1" />
     <TokenId value="SylvanasShadowDaggerUnfurlingShadowsQuestToken" />
   </CEffectModifyTokenCount>
@@ -2181,6 +2181,7 @@
     <LeechFlatModifierArray index="LifeDrainWithPinnacle" Validator="SylvanasHasLifeDrainAndPinnacleComplete" Modifier="$SylvanasLifeDrainLeechModifier" />
     <LeechFlatModifierArray index="LifeDrainHero" Validator="SylvanasLifeDrainTargetIsHeroLeechCombine" Modifier="$SylvanasLifeDrainLeechModifier" />
     <LeechFlatModifierArray index="BlackArrowsPinnacle" Validator="SylvanasBlackArrowsLeechPinnacleCombine" Modifier="$SylvanasBlackArrowsPinnacleLeechDataModifier" />
+    <LeechFlatModifierArray index="BlackArrowsPinnacleHero" Validator="SylvanasBlackArrowsLeechPinnacleCombineHero" Modifier="$SylvanasBlackArrowsPinnacleLeechValue" />
   </CEffectDamage>
   <CEffectModifyUnit id="SylvanasShadowDaggerSpiritShotsTalentModifyUnit">
     <Chance value="0" />
@@ -2241,6 +2242,7 @@
     <LeechFlatModifierArray index="LifeDrainWithPinnacle" Validator="SylvanasHasLifeDrainAndPinnacleComplete" Modifier="$SylvanasLifeDrainLeechModifier" />
     <LeechFlatModifierArray index="LifeDrainHero" Validator="SylvanasLifeDrainTargetIsHeroLeechCombine" Modifier="$SylvanasLifeDrainLeechModifier" />
     <LeechFlatModifierArray index="BlackArrowsPinnacle" Validator="SylvanasBlackArrowsLeechPinnacleCombine" Modifier="$SylvanasBlackArrowsPinnacleLeechDataModifier" />
+    <LeechFlatModifierArray index="BlackArrowsPinnacleHero" Validator="SylvanasBlackArrowsLeechPinnacleCombineHero" Modifier="$SylvanasBlackArrowsPinnacleLeechValue" />
   </CEffectDamage>
   <CEffectEnumArea id="SylvanasBlackArrowUnstablePoisonTalentSearch">
     <ImpactLocation Value="SourceUnitOrPoint" />
@@ -2378,6 +2380,7 @@
     <LeechFlatModifierArray index="LifeDrainWithPinnacle" Validator="SylvanasHasLifeDrainAndPinnacleComplete" Modifier="$SylvanasLifeDrainLeechModifier" />
     <LeechFlatModifierArray index="LifeDrainHero" Validator="SylvanasLifeDrainTargetIsHeroLeechCombine" Modifier="$SylvanasLifeDrainLeechModifier" />
     <LeechFlatModifierArray index="BlackArrowsPinnacle" Validator="SylvanasBlackArrowsLeechPinnacleCombine" Modifier="$SylvanasBlackArrowsPinnacleLeechDataModifier" />
+    <LeechFlatModifierArray index="BlackArrowsPinnacleHero" Validator="SylvanasBlackArrowsLeechPinnacleCombineHero" Modifier="$SylvanasBlackArrowsPinnacleLeechValue" />
   </CEffectDamage>
   <CEffectDamage id="SylvanasWeaponWitheringFireDamage" parent="StormWeapon">
     <Amount value="40" />
@@ -2513,6 +2516,7 @@
     <LeechFlatModifierArray index="LifeDrainWithPinnacle" Validator="SylvanasHasLifeDrainAndPinnacleComplete" Modifier="$SylvanasLifeDrainLeechModifier" />
     <LeechFlatModifierArray index="LifeDrainHero" Validator="SylvanasLifeDrainTargetIsHeroLeechCombine" Modifier="$SylvanasLifeDrainLeechModifier" />
     <LeechFlatModifierArray index="BlackArrowsPinnacle" Validator="SylvanasBlackArrowsLeechPinnacleCombine" Modifier="$SylvanasBlackArrowsPinnacleLeechDataModifier" />
+    <LeechFlatModifierArray index="BlackArrowsPinnacleHero" Validator="SylvanasBlackArrowsLeechPinnacleCombineHero" Modifier="$SylvanasBlackArrowsPinnacleLeechValue" />
   </CEffectDamage>
   <CEffectApplyBehavior id="SylvanasWitheringFireApplyEvasiveFireSpeedupBehavior">
     <Chance value="0" />
@@ -2597,6 +2601,7 @@
     <LeechFlatModifierArray index="LifeDrainWithPinnacle" Validator="SylvanasHasLifeDrainAndPinnacleComplete" Modifier="$SylvanasLifeDrainLeechModifier" />
     <LeechFlatModifierArray index="LifeDrainHero" Validator="SylvanasLifeDrainTargetIsHeroLeechCombine" Modifier="$SylvanasLifeDrainLeechModifier" />
     <LeechFlatModifierArray index="BlackArrowsPinnacle" Validator="SylvanasBlackArrowsLeechPinnacleCombine" Modifier="$SylvanasBlackArrowsPinnacleLeechDataModifier" />
+    <LeechFlatModifierArray index="BlackArrowsPinnacleHero" Validator="SylvanasBlackArrowsLeechPinnacleCombineHero" Modifier="$SylvanasBlackArrowsPinnacleLeechValue" />
   </CEffectDamage>
   <CEffectEnumArea id="SylvanasHauntingWaveDummyVisualGuide">
     <ImpactLocation Value="TargetPoint" />
@@ -2882,6 +2887,7 @@
     <LeechFlatModifierArray index="LifeDrainWithPinnacle" Validator="SylvanasHasLifeDrainAndPinnacleComplete" Modifier="$SylvanasLifeDrainLeechModifier" />
     <LeechFlatModifierArray index="LifeDrainHero" Validator="SylvanasLifeDrainTargetIsHeroLeechCombine" Modifier="$SylvanasLifeDrainLeechModifier" />
     <LeechFlatModifierArray index="BlackArrowsPinnacle" Validator="SylvanasBlackArrowsLeechPinnacleCombine" Modifier="$SylvanasBlackArrowsPinnacleLeechDataModifier" />
+    <LeechFlatModifierArray index="BlackArrowsPinnacleHero" Validator="SylvanasBlackArrowsLeechPinnacleCombineHero" Modifier="$SylvanasBlackArrowsPinnacleLeechValue" />
   </CEffectDamage>
   <CEffectDamage id="SylvanasWailingArrowDeafeningBlastDamage" parent="StormSpell">
     <ImpactLocation Value="TargetUnit" />
@@ -2897,6 +2903,7 @@
     <LeechFlatModifierArray index="LifeDrainWithPinnacle" Validator="SylvanasHasLifeDrainAndPinnacleComplete" Modifier="$SylvanasLifeDrainLeechModifier" />
     <LeechFlatModifierArray index="LifeDrainHero" Validator="SylvanasLifeDrainTargetIsHeroLeechCombine" Modifier="$SylvanasLifeDrainLeechModifier" />
     <LeechFlatModifierArray index="BlackArrowsPinnacle" Validator="SylvanasBlackArrowsLeechPinnacleCombine" Modifier="$SylvanasBlackArrowsPinnacleLeechDataModifier" />
+    <LeechFlatModifierArray index="BlackArrowsPinnacleHero" Validator="SylvanasBlackArrowsLeechPinnacleCombineHero" Modifier="$SylvanasBlackArrowsPinnacleLeechValue" />
   </CEffectDamage>
   <CEffectApplyBehavior id="SylvanasWailingArrowApplyTargetBehavior">
     <Behavior value="SylvanasWailingArrowTarget" />
@@ -3051,6 +3058,7 @@
     <LeechFlatModifierArray index="LifeDrainWithPinnacle" Validator="SylvanasHasLifeDrainAndPinnacleComplete" Modifier="$SylvanasLifeDrainLeechModifier" />
     <LeechFlatModifierArray index="LifeDrainHero" Validator="SylvanasLifeDrainTargetIsHeroLeechCombine" Modifier="$SylvanasLifeDrainLeechModifier" />
     <LeechFlatModifierArray index="BlackArrowsPinnacle" Validator="SylvanasBlackArrowsLeechPinnacleCombine" Modifier="$SylvanasBlackArrowsPinnacleLeechDataModifier" />
+    <LeechFlatModifierArray index="BlackArrowsPinnacleHero" Validator="SylvanasBlackArrowsLeechPinnacleCombineHero" Modifier="$SylvanasBlackArrowsPinnacleLeechValue" />
   </CEffectDamage>
   <CEffectApplyBehavior id="SylvanasShadowDaggerApplyTargetEnemyDamageBehavior">
     <Behavior value="SylvanasShadowDaggerTargetEnemyDamage" />
@@ -4399,6 +4407,7 @@
     <Type value="And" />
     <CombineArray value="SylvanasTargetHas3StacksOfBlackArrowsStackingBehavior" />
     <CombineArray value="IsNotMinionAndNotSummoned" />
+    <CombineArray value="TargetNotMerc" />
   </CValidatorCombine>
   <CValidatorUnitCompareBehaviorCount id="SylvanasShadowDaggerHasUnyieldingBlightMarkerBehavior">
     <WhichUnit Value="Caster" />

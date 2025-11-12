@@ -3931,7 +3931,7 @@
   </CValidatorUnitCompareBehaviorCount>
   <CValidatorUnitCompareTokenCount id="ZuljinYouWantAxeLTStacks">
     <Compare value="LT" />
-    <Value value="50" />
+    <Value value="200" />
     <TokenId value="ZuljinYouWantAxeQuestMainToken" />
   </CValidatorUnitCompareTokenCount>
   <CValidatorUnitCompareTokenCount id="ZuljinYouWantAxeLTStacksCaster" parent="ZuljinYouWantAxeLTStacks">

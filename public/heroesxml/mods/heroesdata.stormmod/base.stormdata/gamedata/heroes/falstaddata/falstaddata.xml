@@ -132,7 +132,7 @@
     <Effect value="FalstadLightningRodInitialSet" />
     <Cost>
       <Vital index="Energy" value="60" />
-      <Cooldown TimeUse="13" />
+      <Cooldown TimeUse="12" />
     </Cost>
     <Range value="$FalstadLightningRodRange" />
     <PrepEffect value="DismountDecloakCasterSet" />
@@ -978,7 +978,7 @@
       <Fatal value="1" />
     </DamageResponse>
   </CBehaviorBuff>
-  <CBehaviorTokenCounter id="FalstadHammerangGatheringStormDamageToken" parent="StormQuestToken">
+  <CBehaviorTokenCounter id="FalstadHammerangGatheringStormDamageToken" parent="StormGenericToken">
     <Face value="FalstadHammerangGatheringStormQuestToken" />
     <InfoFlags index="Hidden" value="1" />
     <Max value="65535" />
@@ -1015,7 +1015,7 @@
       <Event EventId="QuestMilestone" Effect="FalstadDishonorableDischargeModifyPlayer" />
     </ConditionalEvents>
     <ConditionalEvents Compare="GE" CompareValue="45">
-      <Event EventId="QuestMilestone" Effect="FalstadDishonorableDischargeModifyPlayer2" ValidRange="0,0" />
+      <Event EventId="QuestMilestone" Effect="FalstadDishonorableDischargeModifyPlayer2" />
     </ConditionalEvents>
   </CBehaviorTokenCounter>
   <CBehaviorTokenCounter id="FalstadFrequentFlyerTokenCounter" parent="StormQuestToken">
@@ -1085,12 +1085,12 @@
   <CBehaviorTokenCounter id="FalstadHammerangGatheringStormQuestToken" parent="StormQuestToken">
     <Max value="150" />
     <ConditionalEvents Compare="GE" CompareValue="30">
-      <Event EventId="QuestMilestone" Effect="FalstadHammerangGatheringStormQuestMilestoneModifyQuestToken" />
+      <Event EventId="QuestMilestone" Effect="FalstadGatheringStormFirstMilestoneGrantSet" />
     </ConditionalEvents>
     <ConditionalEvents Compare="GE" CompareValue="80">
-      <Event EventId="QuestMilestone" Effect="FalstadHammerangGatheringStormQuestMilestoneModifyQuestToken2" />
+      <Event EventId="QuestMilestone" Effect="FalstadGatheringStormSecondMilestoneGrantSet" />
     </ConditionalEvents>
-    <AtMaxEvents index="0" EventId="QuestComplete" Effect="FalstadHammerangGatheringStormQuestMilestoneModifyQuestToken3" />
+    <AtMaxEvents index="0" EventId="QuestComplete" Effect="FalstadGatheringStormQuestCompleteGrantSet" />
   </CBehaviorTokenCounter>
   <CBehaviorBuff id="FalstadHammerGains">
     <Face value="GenericVigorousAssaultTalent" />
@@ -1568,6 +1568,7 @@
   </CEffectRemoveBehavior>
   <CEffectApplyBehavior id="LightningRodApplyDishonorableDischargeDamageResponse">
     <Behavior value="DishonorableDischargeFatalResponse" />
+    <ValidatorArray index="0" value="TargetIsEnemyHero" />
   </CEffectApplyBehavior>
   <CEffectApplyBehavior id="FalstadDishonorableDischargeApplyStun">
     <ValidatorArray index="0" value="FalstadCasterHasLightningRodDishonorableDischarge7Stacks" />
@@ -1580,20 +1581,33 @@
     <WhichUnit Value="Caster" />
     <Behavior value="FalstadLightningRodDishonorableDischargeStacking" />
   </CEffectApplyBehavior>
+  <CEffectSet id="FalstadGatheringStormSecondMilestoneGrantSet">
+    <EffectArray value="FalstadHammerangGatheringStormQuestMilestoneModifyQuestToken2" />
+    <EffectArray value="FalstadGatheringStormFirstMilestoneDisableMilestone" />
+  </CEffectSet>
   <CEffectModifyTokenCount id="FalstadHammerangGatheringStormQuestMilestoneModifyQuestToken2" parent="BaseEffectModifyTokenCount">
     <Marker Link="Effect/FalstadHammerangGatheringStormQuestMilestoneModifyQuestToken" />
-    <EffectCategory index="Quest" value="1" />
     <CollationId value="FalstadHammerangGatheringStormModifyQuestToken" />
     <TokenId value="FalstadHammerangGatheringStormDamageToken" />
     <Value value="50" />
   </CEffectModifyTokenCount>
+  <CEffectModifyPlayer id="FalstadGatheringStormSecondMilestoneDisableMilestone">
+    <EffectArray Operation="Set" Reference="Effect,FalstadGatheringStormSecondMilestoneGrantSet,Chance" Value="0" />
+  </CEffectModifyPlayer>
+  <CEffectSet id="FalstadGatheringStormQuestCompleteGrantSet">
+    <EffectArray value="FalstadHammerangGatheringStormQuestMilestoneModifyQuestToken3" />
+    <EffectArray value="FalstadGatheringStormQuestCompleteModifyPlayer" />
+  </CEffectSet>
   <CEffectModifyTokenCount id="FalstadHammerangGatheringStormQuestMilestoneModifyQuestToken3" parent="BaseEffectModifyTokenCount">
     <Marker Link="Effect/FalstadHammerangGatheringStormQuestMilestoneModifyQuestToken" />
-    <EffectCategory index="Quest" value="1" />
     <CollationId value="FalstadHammerangGatheringStormModifyQuestToken" />
     <TokenId value="FalstadHammerangGatheringStormDamageToken" />
     <Value value="70" />
   </CEffectModifyTokenCount>
+  <CEffectModifyPlayer id="FalstadGatheringStormQuestCompleteModifyPlayer">
+    <EffectArray Operation="Set" Reference="Effect,FalstadGatheringStormQuestCompleteGrantSet,Chance" Value="0" />
+    <EffectArray Operation="Set" Reference="Effect,HammerangGatheringStormModifyQuestTokenDeath,Chance" Value="0" />
+  </CEffectModifyPlayer>
   <CEffectModifyPlayer id="FalstadDishonorableDischargeModifyPlayer2">
     <Marker Link="Effect/FalstadDishonorableDischargeModifyPlayer" />
     <EffectArray Reference="Abil,FalstadLightningRod,Cost.Cooldown.TimeUse" Value="-2.000000" />
@@ -1631,7 +1645,6 @@
     <Value value="-10" />
   </CEffectModifyTokenCount>
   <CEffectSet id="FalstadDeathSet">
-    <EffectArray value="HammerangGatheringStormModifyDamageTokenDeath" />
     <EffectArray value="HammerangGatheringStormModifyQuestTokenDeath" />
   </CEffectSet>
   <CEffectModifyTokenCount id="HammerangGatheringStormModifyDamageTokenDeath" parent="BaseEffectModifyTokenCount">
@@ -1661,12 +1674,18 @@
     <TokenId value="FalstadHammerangGatheringStormQuestToken" />
     <Value value="-8" />
   </CEffectModifyTokenCount>
+  <CEffectSet id="FalstadGatheringStormFirstMilestoneGrantSet">
+    <EffectArray value="FalstadHammerangGatheringStormQuestMilestoneModifyQuestToken" />
+    <EffectArray value="FalstadGatheringStormFirstMilestoneDisableMilestone" />
+  </CEffectSet>
   <CEffectModifyTokenCount id="FalstadHammerangGatheringStormQuestMilestoneModifyQuestToken" parent="BaseEffectModifyTokenCount">
-    <EffectCategory index="Quest" value="1" />
     <CollationId value="FalstadHammerangGatheringStormModifyQuestToken" />
     <TokenId value="FalstadHammerangGatheringStormDamageToken" />
     <Value value="30" />
   </CEffectModifyTokenCount>
+  <CEffectModifyPlayer id="FalstadGatheringStormFirstMilestoneDisableMilestone">
+    <EffectArray Operation="Set" Reference="Effect,FalstadGatheringStormFirstMilestoneGrantSet,Chance" Value="0" />
+  </CEffectModifyPlayer>
   <CEffectModifyTokenCount id="FalstadHammerangGatheringStormModifyDamageToken" parent="BaseEffectModifyTokenCount">
     <ValidatorArray value="TargetIsHero" />
     <EffectCategory index="Quest" value="1" />
@@ -2110,12 +2129,12 @@
     <EffectArray value="FalstadLightningRodApplyConductorBehavior" />
     <EffectArray value="FalstadLightningRodApplyCasterBehavior" />
     <EffectArray value="ApplyAbilityImpactReveal" />
+    <EffectArray value="LightningRodApplyDishonorableDischargeDamageResponse" />
     <EffectArray value="FalstadLightningRodInitialDamage" />
     <EffectArray value="FalstadLightningRodIssueAttackOrder" />
     <EffectArray value="FalstadLightningRodInitialSetSecondary" />
     <EffectArray value="FalstadLightningRodApplyThunderstrikesDelay" />
     <EffectArray value="FalstadDishonorableDischargeStrikesSwitch" />
-    <EffectArray value="LightningRodApplyDishonorableDischargeDamageResponse" />
   </CEffectSet>
   <CEffectDamage id="FalstadLightningRodDamage" parent="StormSpell">
     <Amount value="75" />
@@ -3295,14 +3314,6 @@
     <RankArray>
       <BehaviorArray value="FalstadDishonorableDischargeToken" />
     </RankArray>
-    <AbilityModificationArray>
-      <Modifications>
-        <Type value="FlatModification" />
-        <Entry value="FalstadLightningRod" />
-        <Field value="Cost.Cooldown.TimeUse" />
-        <Value value="-2.000000" />
-      </Modifications>
-    </AbilityModificationArray>
     <QuestData StackBehavior="FalstadDishonorableDischargeToken" />
   </CTalent>
   <CTalent id="FalstadWingman">
@@ -3348,6 +3359,30 @@
         <Entry value="FalstadHammerangGatheringStormModifyDamageToken" />
         <Field value="Chance" />
         <Value value="1.000000" />
+      </Modifications>
+      <Modifications>
+        <Type value="FlatModification" />
+        <Catalog value="Effect" />
+        <Entry value="FalstadGatheringStormFirstMilestoneGrantSet" />
+        <Field value="Chance" />
+      </Modifications>
+      <Modifications>
+        <Type value="FlatModification" />
+        <Catalog value="Effect" />
+        <Entry value="FalstadGatheringStormSecondMilestoneGrantSet" />
+        <Field value="Chance" />
+      </Modifications>
+      <Modifications>
+        <Type value="FlatModification" />
+        <Catalog value="Effect" />
+        <Entry value="FalstadGatheringStormQuestCompleteGrantSet" />
+        <Field value="Chance" />
+      </Modifications>
+      <Modifications>
+        <Type value="FlatModification" />
+        <Catalog value="Effect" />
+        <Entry value="HammerangGatheringStormModifyQuestTokenDeath" />
+        <Field value="Chance" />
       </Modifications>
     </AbilityModificationArray>
     <QuestData StackBehavior="FalstadHammerangGatheringStormQuestToken" />
