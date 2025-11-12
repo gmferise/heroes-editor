@@ -3114,10 +3114,10 @@
   <CEffectDamage id="ThrallChainLightningInitialDamage" parent="StormSpell">
     <Amount value="170" />
     <MultiplicativeModifierArray index="Thunderstorm" Validator="ThrallHas5ThunderstormTokens" Modifier="$ThrallThunderstormDamageModifier" Crit="1" />
-    <FlatModifierArray index="CrashLightning" Validator="ThrallHasCrashLightningTalent" Accumulator="ThrallCrashLightningDamageBonusAccumulator" />
   </CEffectDamage>
   <CEffectDamage id="ThrallChainLightningBounce1Damage" parent="ThrallChainLightningInitialDamage">
     <Amount value="85" />
+    <FlatModifierArray index="CrashLightning" Validator="ThrallHasCrashLightningTalent" Accumulator="ThrallCrashLightningDamageBonusAccumulator" />
   </CEffectDamage>
   <CEffectDamage id="ThrallChainLightningBounce2Damage" parent="ThrallChainLightningBounce1Damage" />
   <CEffectDamage id="ThrallChainLightningBounce3Damage" parent="ThrallChainLightningBounce1Damage" />
