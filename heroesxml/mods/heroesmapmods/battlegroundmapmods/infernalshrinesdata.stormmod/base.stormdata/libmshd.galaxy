@@ -1,0 +1,124 @@
+include "TriggerLibs/NativeLib"
+include "TriggerLibs/HeroesLib"
+include "TriggerLibs/GameLib"
+include "TriggerLibs/AILib"
+include "LibMLHH"
+
+include "LibMSHD_h"
+
+//--------------------------------------------------------------------------------------------------
+// Library: Infernal Shrines Data (Mod)
+//--------------------------------------------------------------------------------------------------
+// External Library Initialization
+void libMSHD_InitLibraries () {
+    libNtve_InitVariables();
+    libCore_InitVariables();
+    libGame_InitVariables();
+    libAIAI_InitVariables();
+    libMLHH_InitVariables();
+}
+
+// Variable Initialization
+bool libMSHD_InitVariables_completed = false;
+
+void libMSHD_InitVariables () {
+    if (libMSHD_InitVariables_completed) {
+        return;
+    }
+
+    libMSHD_InitVariables_completed = true;
+
+}
+
+// Functions
+void libMSHD_gf_MMISPreloadPunisherModels (string lp_shrineBehavior) {
+    // Automatic Variable Declarations
+    string auto57087156_val;
+
+    // Implementation
+    auto57087156_val = lp_shrineBehavior;
+    if (auto57087156_val == "ArcaneShrine") {
+        PreloadModel("Assets\\Units\\Mercs\\Storm_Merc_HvH2_Punisher_Arcane\\Storm_Merc_HvH2_Punisher_Arcane.m3", false);
+        PreloadModel("Assets\\Units\\Mercs\\Storm_Merc_HvH2_Punisher_Arcane_Death\\Storm_Merc_HvH2_Punisher_Arcane_Death.m3", false);
+        PreloadModel("Assets\\Effects\\Storm_FX_Merc_HvH2_Punisher_Arcane_LeapImpact\\Storm_FX_Merc_HvH2_Punisher_Arcane_LeapImpact.m3", false);
+        PreloadModel("Assets\\Effects\\Storm_FX_Merc_HvH2_Punisher_Arcane_Beam_Cast\\Storm_FX_Merc_HvH2_Punisher_Arcane_Beam_Cast.m3", false);
+    }
+    else if (auto57087156_val == "FrozenShrine") {
+        PreloadModel("Assets\\Units\\Mercs\\Storm_Merc_HvH2_Punisher_Frozen\\Storm_Merc_HvH2_Punisher_Frozen.m3", false);
+        PreloadModel("Assets\\Units\\Mercs\\Storm_Merc_HvH2_Punisher_Frozen_Death\\Storm_Merc_HvH2_Punisher_Frozen_Death.m3", false);
+        PreloadModel("Assets\\Effects\\Storm_FX_Merc_HvH2_Punisher_Frozen_LeapImpact\\Storm_FX_Merc_HvH2_Punisher_Frozen_LeapImpact.m3", false);
+        PreloadModel("Assets\\Effects\\Storm_FX_Merc_HvH2_Punisher_Frozen_FrostExplosion_Cast\\Storm_FX_Merc_HvH2_Punisher_Frozen_FrostExplosion_Cast.m3", false);
+        PreloadModel("Assets\\Effects\\Storm_FX_Merc_HvH2_Punisher_Frozen_FrostExplosion\\Storm_FX_Merc_HvH2_Punisher_Frozen_FrostExplosion.m3", false);
+    }
+    else if (auto57087156_val == "BombardShrine") {
+        PreloadModel("Assets\\Units\\Mercs\\Storm_Merc_HvH2_Punisher_Mortar\\Storm_Merc_HvH2_Punisher_Mortar.m3", false);
+        PreloadModel("Assets\\Units\\Mercs\\Storm_Merc_HvH2_Punisher_Mortar_Death\\Storm_Merc_HvH2_Punisher_Mortar_Death.m3", false);
+        PreloadModel("Assets\\Effects\\Storm_FX_Merc_HvH2_Punisher_Mortar_LeapImpact\\Storm_FX_Merc_HvH2_Punisher_Mortar_LeapImpact.m3", false);
+        PreloadModel("Assets\\Effects\\Storm_FX_Merc_HvH2_Punisher_Mortar_Missile\\Storm_FX_Merc_HvH2_Punisher_Mortar_Missile.m3", false);
+        PreloadModel("Assets\\Effects\\Storm_FX_Merc_HvH2_Punisher_Mortar_Missile_Explosion\\Storm_FX_Merc_HvH2_Punisher_Mortar_Missile_Explosion.m3", false);
+    }
+    else {
+    }
+}
+
+// Triggers
+//--------------------------------------------------------------------------------------------------
+// Trigger: #Include Infernal Shrines Data
+//--------------------------------------------------------------------------------------------------
+bool libMSHD_gt_IncludeInfernalShrinesData_Func (bool testConds, bool runActions) {
+    // Automatic Variable Declarations
+    return true;
+}
+
+//--------------------------------------------------------------------------------------------------
+void libMSHD_gt_IncludeInfernalShrinesData_Init () {
+    libMSHD_gt_IncludeInfernalShrinesData = TriggerCreate("libMSHD_gt_IncludeInfernalShrinesData_Func");
+}
+
+//--------------------------------------------------------------------------------------------------
+// Trigger: MM ShrinesData Init
+//--------------------------------------------------------------------------------------------------
+bool libMSHD_gt_MMShrinesDataInit_Func (bool testConds, bool runActions) {
+    // Variable Declarations
+    int lv_itPlayer;
+
+    // Automatic Variable Declarations
+    // Variable Initialization
+
+    // Actions
+    if (!runActions) {
+        return true;
+    }
+
+    TriggerExecute(libMLHH_gt_IncludeHH, true, false);
+    return true;
+}
+
+//--------------------------------------------------------------------------------------------------
+void libMSHD_gt_MMShrinesDataInit_Init () {
+    libMSHD_gt_MMShrinesDataInit = TriggerCreate("libMSHD_gt_MMShrinesDataInit_Func");
+    libGame_gf_MapMechanicInitialization(libMSHD_gt_MMShrinesDataInit);
+}
+
+void libMSHD_InitTriggers () {
+    libMSHD_gt_IncludeInfernalShrinesData_Init();
+    libMSHD_gt_MMShrinesDataInit_Init();
+}
+
+//--------------------------------------------------------------------------------------------------
+// Library Initialization
+//--------------------------------------------------------------------------------------------------
+bool libMSHD_InitLib_completed = false;
+
+void libMSHD_InitLib () {
+    if (libMSHD_InitLib_completed) {
+        return;
+    }
+
+    libMSHD_InitLib_completed = true;
+
+    libMSHD_InitLibraries();
+    libMSHD_InitVariables();
+    libMSHD_InitTriggers();
+}
+
