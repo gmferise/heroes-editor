@@ -12,22 +12,31 @@ import HeroBrowserContext from './HeroBrowserContext';
 import HeroFrameContext from './HeroFrameContext';
 
 const Frame = styled(Box, {
-  shouldForwardProp: (p) => p !== 'closeIntent',
-})(({ theme, closeIntent }) => ({
-  border: `1px solid ${closeIntent ? theme.palette.error.main : theme.palette.grey[400]}`,
-  transition: 'border-color ease 0.2s',
-  borderRadius: '4px',
-  padding: theme.spacing(1, 1.5, 1, 1),
-}));
+  shouldForwardProp: (p) => !['frameBorderRed', 'frameBorderPink'].includes(p),
+})(({ theme, frameBorderRed, frameBorderPink }) => {
+  const borderColor = (
+    (frameBorderRed && theme.palette.error.main)
+    || (frameBorderPink && theme.palette.rel.main)
+    || theme.palette.grey[400]
+  );
+  return {
+    border: `1px solid ${borderColor}`,
+    transition: 'border-color ease 0.2s',
+    borderRadius: '4px',
+    padding: theme.spacing(1, 1.5, 1, 1),
+  };
+});
 
 function HeroBrowserFrame(props) {
   const {
     panelIndex,
     stackIndex,
     element,
+    scrollIntoView,
     startCollapsed,
     parentCloseIntent,
     rels,
+    ref,
   } = props;
 
   const [collapse, setCollapse] = useState(startCollapsed);
@@ -37,6 +46,7 @@ function HeroBrowserFrame(props) {
   const {
     forceCollapseAll,
     prepareToCloseFrame,
+    scrollFrameIntoView,
   } = useContext(HeroBrowserContext);
 
   const toggleCollapse = useCallback(() => {
@@ -72,11 +82,22 @@ function HeroBrowserFrame(props) {
   const offsetPopper = { popper: { popperOptions: { modifiers: [{ name: 'offset', options: { offset: [0, -8] } }] } } };
 
   const frameLocation = useMemo(() => [panelIndex, stackIndex], [panelIndex, stackIndex]);
-  const frameRedBorder = useMemo(() => closeIntent || parentCloseIntent, [closeIntent, parentCloseIntent]);
+  const frameBorderRed = useMemo(() => closeIntent || parentCloseIntent, [closeIntent, parentCloseIntent]);
+  const [frameBorderPink, setFrameBorderPink] = useState(false);
+
+  useEffect(() => {
+    if (scrollIntoView) {
+      scrollFrameIntoView(panelIndex, stackIndex);
+      setFrameBorderPink(true);
+      setTimeout(() => {
+        setFrameBorderPink(false);
+      }, 750);
+    }
+  }, [scrollIntoView, panelIndex, stackIndex, setFrameBorderPink]);
 
   return (
     <HeroFrameContext.Provider value={frameLocation}>
-      <Frame closeIntent={frameRedBorder}>
+      <Frame ref={ref} frameBorderRed={frameBorderRed} frameBorderPink={frameBorderPink}>
         <Grid container direction='column' flexWrap='nowrap'>
           <Grid item>
             <Grid container flexWrap='nowrap' alignItems='center' justifyContent='space-between' columnSpacing={2}>
@@ -132,7 +153,7 @@ function HeroBrowserFrame(props) {
                     </IconButton>
                   </Tooltip>
                 </Grid> */}
-                  {/* <Grid item>
+                  <Grid item>
                     <Tooltip
                       title='Close'
                       placement='right'
@@ -149,7 +170,7 @@ function HeroBrowserFrame(props) {
                         <CloseIcon />
                       </IconButton>
                     </Tooltip>
-                  </Grid> */}
+                  </Grid>
                 </Grid>
               </Grid>
             </Grid>

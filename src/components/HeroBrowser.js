@@ -7,18 +7,20 @@ import HeroBrowserContext from './HeroBrowserContext';
 function HeroBrowser(props) {
   const { catalog } = props;
 
-  const [browserData, setBrowserData] = useState([/*
-  [panelIndex][stackIndex]
-    {
-      startCollapsed: bool,
-      parentCloseIntent: bool,
-      element: Element,
-      rels: [{
-        toPanelIndex: int,
-        toStackIndex: int,
-      }],
-    }
-  */]);
+  /*
+  browserData = [panelIndex][stackIndex]{
+    startCollapsed: bool,
+    parentCloseIntent: bool,
+    scrollIntoView: bool
+    element: Element,
+    ref: React.Ref,
+    rels: [{
+      toPanelIndex: int,
+      toStackIndex: int,
+    }],
+  }
+  */
+  const [browserData, setBrowserData] = useState([[]]);
   const [forceCollapseAll, setForceCollapseAll] = useState(false);
   const [tagSelect, setTagSelect] = useState(null);
 
@@ -27,14 +29,35 @@ function HeroBrowser(props) {
       panelIndex: newPanelIndex = 0,
       stackIndex = null,
       startCollapsed = false,
+      scrollIntoView = false,
       parentCloseIntent = false,
       fromPanelIndex,
       fromStackIndex,
     } = options;
-    const newFrame = { startCollapsed, parentCloseIntent, element, rels: [] };
+    const newFrame = {
+      startCollapsed,
+      parentCloseIntent,
+      scrollIntoView,
+      element,
+      ref: { current: null },
+      rels: [],
+    };
     let newStackIndex;
     setBrowserData((prev) => {
-      newStackIndex = stackIndex === null ? (prev[newPanelIndex] || []).length : stackIndex;
+      const prevPanel = prev[newPanelIndex] || [];
+
+      // Logic for an existing element
+      const existingStackIndex = prevPanel.findIndex((frame) => `${frame.element.tagName}#${frame.element.id}` === `${element.tagName}#${element.id}`);
+      if (existingStackIndex !== -1) {
+        return prev.map((panel, currentPanelIndex) => panel.map((frame, currentStackIndex) => (
+          currentPanelIndex === newPanelIndex && currentStackIndex === existingStackIndex
+            ? { ...frame, scrollIntoView: true }
+            : frame
+        )));
+      }
+
+      // Add a new element
+      newStackIndex = stackIndex === null ? prevPanel.length : stackIndex;
       const updatedRels = prev.map((panel, currentPanelIndex) => panel.map((frame, currentStackIndex) => ({
         ...frame,
         rels: [
@@ -91,6 +114,21 @@ function HeroBrowser(props) {
     });
   }, [setBrowserData]);
 
+  const scrollFrameIntoView = useCallback((panelIndex, stackIndex) => {
+    setBrowserData((prev) => {
+      const htmlElement = prev[panelIndex][stackIndex].ref.current;
+      if (htmlElement) {
+        htmlElement.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
+      }
+      // await new Promise((resolve) => setTimeout(resolve, 500));
+      return prev.map((panel, currentPanelIndex) => panel.map((frame, currentStackIndex) => (
+        currentPanelIndex === panelIndex && currentStackIndex === stackIndex
+          ? { ...frame, scrollIntoView: false }
+          : frame
+      )));
+    });
+  }, [setBrowserData]);
+
   const searchCatalog = useCallback((elementId) => {
     return Array.from(catalog.querySelectorAll(`*[id="${elementId}"]`));
   }, [catalog]);
@@ -121,6 +159,7 @@ function HeroBrowser(props) {
     searchCatalog,
     addFrame,
     prepareToCloseFrame,
+    scrollFrameIntoView,
     forceCollapseAll,
   });
 
@@ -144,7 +183,7 @@ function HeroBrowser(props) {
               <Grid item key={`hero-browser-panel-${panelIndex}`}>
                 <Grid container direction='column' flexWrap='nowrap' rowSpacing={1}>
                   {panel.map((frame, stackIndex) => (
-                    <Grid item key={`hero-browser-frame-${panelIndex}-${stackIndex}`}>
+                    <Grid item key={`hero-browser-frame-${frame.element.tagName}-${frame.element.id}`}>
                       <HeroBrowserFrame
                         {...frame}
                         panelIndex={panelIndex}

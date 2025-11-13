@@ -1,5 +1,5 @@
 import React, { useEffect, useCallback, useMemo, useContext, useRef, useState } from 'react';
-import { Grid, Box, Typography } from '@mui/material';
+import { Grid, Box, Typography, Button, Popover } from '@mui/material';
 
 import { styled } from '@mui/system';
 import HeroBrowserContext from './HeroBrowserContext';
@@ -34,53 +34,23 @@ const OverflowBox = styled(Box)(() => ({
   },
 }));
 
-function ValueDisplay(props) {
-  const {
-    value,
-    onClick,
-  } = props;
+const PopoverSep = styled(Box)(({ theme }) => ({
+  borderBottom: `1px solid ${theme.palette.grey[300]}`,
+}));
 
-  return onClick ? (
-    <>
-      <Line component='span' color='grey.300'>: </Line >
-      <ClickableLine component='span' color='rel' onClick={onClick}>{value}</ClickableLine>
-    </>
-  ) : (
-    <Line component='span' color='grey.300'>: {value}</Line >
-  );
-}
+const LineButtonStyled = styled(Button)(() => ({
+  padding: '0',
+  justifyContent: 'flex-start',
+  textTransform: 'none',
+  '&:hover': {
+    textDecoration: 'underline',
+  },
+}));
 
 export function ClickableTag(props) {
   const { element } = props;
   const index = element.attributes.getNamedItem('index');
   const value = element.attributes.getNamedItem('value');
-
-  const {
-    searchCatalog,
-    addFrame,
-  } = useContext(HeroBrowserContext);
-
-  const [panelIndex, stackIndex] = useContext(HeroFrameContext);
-
-  const catalogEntries = useMemo(() => (
-    value ? searchCatalog(value.value) : []
-  ), [value]);
-
-  const handleAddFrame = useCallback(() => {
-    // TODO: Select which one
-    catalogEntries.forEach((entry) => {
-      addFrame(entry, {
-        panelIndex: panelIndex + 1,
-        fromPanelIndex: panelIndex,
-        fromStackIndex: stackIndex,
-      });
-    });
-  }, [catalogEntries, addFrame, panelIndex, stackIndex]);
-
-  const handleClick = useCallback(
-    catalogEntries.length === 0 ? null : handleAddFrame,
-    [catalogEntries, handleAddFrame],
-  );
 
   return (
     <OverflowBox>
@@ -92,22 +62,41 @@ export function ClickableTag(props) {
         <Line component='span' color='idx'>[{index.value}]</Line>
       )}
       {value && (
-        <ValueDisplay value={value.value} onClick={handleClick} />
+        <ValueDisplay value={value.value} />
       )}
     </OverflowBox>
   );
 }
 
-const ConnectorBox = styled(Box)(() => ({
-  position: 'absolute',
-  left: 'calc(100% + 12px)',
-  top: '0',
-  display: 'flex',
-  alignItems: 'center',
-}));
-
 function ClickableAttr(props) {
   const { attribute } = props;
+
+  return (
+    <OverflowBox>
+      <Line component='span' color='attr'>{attribute.localName}</Line>
+      <ValueDisplay value={attribute.value} />
+    </OverflowBox>
+  );
+}
+
+function LineButton(props) {
+  const {
+    color = 'primary',
+    children,
+    ...buttonProps
+  } = props;
+
+  return (
+    <LineButtonStyled color={color} fullWidth {...buttonProps}>
+      <Line component='span' color={color}>{children}</Line>
+    </LineButtonStyled>
+  );
+}
+
+function ValueDisplay(props) {
+  const {
+    value,
+  } = props;
 
   const {
     searchCatalog,
@@ -116,31 +105,83 @@ function ClickableAttr(props) {
 
   const [panelIndex, stackIndex] = useContext(HeroFrameContext);
 
+  const [showPopover, setShowPopover] = useState(false);
+  const [popoverTarget, setPopoverTarget] = useState(null);
+
   const catalogEntries = useMemo(() => (
-    searchCatalog(attribute.value)
-  ), [attribute.value]);
+    value ? searchCatalog(value) : []
+  ), [value]);
 
-  const handleAddFrame = useCallback(() => {
-    // TODO: Select which one
-    catalogEntries.forEach((entry) => {
-      addFrame(entry, {
-        panelIndex: panelIndex + 1,
-        fromPanelIndex: panelIndex,
-        fromStackIndex: stackIndex,
-      });
+  const handleClick = useCallback((event) => {
+    setShowPopover(true);
+    setPopoverTarget(event.currentTarget);
+  }, [setShowPopover, setPopoverTarget]);
+
+  const handleClosePopover = useCallback(() => {
+    setShowPopover(false);
+    setPopoverTarget(null);
+  }, [setShowPopover, setPopoverTarget]);
+
+  const handleAddFrame = useCallback((element) => {
+    addFrame(element, {
+      panelIndex: panelIndex + 1,
+      fromPanelIndex: panelIndex,
+      fromStackIndex: stackIndex,
+      scrollIntoView: true,
     });
-  }, [catalogEntries, addFrame, panelIndex, stackIndex]);
+    handleClosePopover();
+  }, [addFrame, panelIndex, stackIndex, handleClosePopover]);
 
-  const handleClick = useCallback(
-    catalogEntries.length === 0 ? null : handleAddFrame,
-    [catalogEntries, handleAddFrame],
+  return catalogEntries.length > 0 ? (
+    <>
+      <Line component='span' color='grey.300'>: </Line >
+      <ClickableLine component='span' color='rel' onClick={handleClick}>{value}</ClickableLine>
+      <Popover
+        open={showPopover}
+        onClose={handleClosePopover}
+        anchorEl={popoverTarget}
+        anchorOrigin={{ vertical: 'center', horizontal: 'right' }}
+        transformOrigin={{ vertical: 'center', horizontal: 'left' }}
+        slotProps={{ paper: { sx: { marginLeft: 1 } } }}
+      >
+        <Box paddingY={0.5} paddingX={1}>
+          <Grid container direction='column' flexWrap='nowrap' rowSpacing={0.5}>
+            <Grid item key={`open-child-id-${value}`}>
+              <Line component='span' color='secondary'>#{value}</Line>
+            </Grid>
+            <Grid item>
+              <PopoverSep />
+            </Grid>
+            {catalogEntries.map((element) => (
+              <PopoverEntry
+                key={`open-child-${element.tagName}-${element.id}`}
+                addFrame={handleAddFrame}
+                element={element}
+              />
+            ))}
+          </Grid>
+        </Box>
+      </Popover>
+    </>
+  ) : (
+    <Line component='span' color='grey.300'>: {value}</Line >
   );
+}
+
+function PopoverEntry(props) {
+  const {
+    addFrame,
+    element,
+  } = props;
+
+  const handleClick = useCallback(() => {
+    addFrame(element);
+  }, [addFrame, element]);
 
   return (
-    <OverflowBox>
-      <Line component='span' color='attr'>{attribute.localName}</Line>
-      <ValueDisplay value={attribute.value} onClick={handleClick} />
-    </OverflowBox>
+    <Grid item>
+      <LineButton onClick={handleClick}>{element.tagName}</LineButton>
+    </Grid>
   );
 }
 
