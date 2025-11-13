@@ -146,10 +146,10 @@ function ValueDisplay(props) {
       >
         <Box paddingY={0.5} paddingX={1}>
           <Grid container direction='column' flexWrap='nowrap' rowSpacing={0.5}>
-            <Grid item key={`open-child-id-${value}`}>
+            <Grid key={`open-child-id-${value}`}>
               <Line component='span' color='secondary'>#{value}</Line>
             </Grid>
-            <Grid item>
+            <Grid>
               <PopoverSep />
             </Grid>
             {catalogEntries.map((element) => (
@@ -179,7 +179,7 @@ function PopoverEntry(props) {
   }, [addFrame, element]);
 
   return (
-    <Grid item>
+    <Grid>
       <LineButton onClick={handleClick}>{element.tagName}</LineButton>
     </Grid>
   );
@@ -198,15 +198,15 @@ export default function HeroBrowserContent(props) {
 
   return (
     <Grid container direction='column' flexWrap='nowrap'>
-      <Grid item>
+      <Grid>
         <Grid container direction='column' flexWrap='nowrap'>
-          <Grid item>
+          <Grid>
             {!hideTagName && (
               <ClickableTag element={element} />
             )}
           </Grid>
           {attributes.length > 0 && (
-            <Grid item>
+            <Grid>
               <Indent>
                 {attributes.map((attribute) => (
                   <ClickableAttr key={attribute.localName} attribute={attribute} />
@@ -217,10 +217,10 @@ export default function HeroBrowserContent(props) {
         </Grid>
       </Grid>
       {children.length > 0 && (
-        <Grid item>
+        <Grid>
           <Grid container direction='column' flexWrap='nowrap'>
             {Array.from(children).map((child, i) => (
-              <Grid item key={i}>
+              <Grid key={i}>
                 <Indent>
                   <HeroBrowserContent element={child} />
                 </Indent>

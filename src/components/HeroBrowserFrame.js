@@ -73,7 +73,7 @@ function HeroBrowserFrame(props) {
   // Rendering all the content is slow
   // Memoize to prevent unnecessary re-renders
   const content = useMemo(() => (
-    <Grid item>
+    <Grid>
       <HeroBrowserContent element={element} hideTagName />
     </Grid>
   ), [element]);
@@ -99,11 +99,11 @@ function HeroBrowserFrame(props) {
     <HeroFrameContext.Provider value={frameLocation}>
       <Frame ref={ref} frameBorderRed={frameBorderRed} frameBorderPink={frameBorderPink}>
         <Grid container direction='column' flexWrap='nowrap'>
-          <Grid item>
+          <Grid>
             <Grid container flexWrap='nowrap' alignItems='center' justifyContent='space-between' columnSpacing={2}>
-              <Grid item>
+              <Grid>
                 <Grid container flexWrap='nowrap' alignItems='center' columnSpacing={1}>
-                  <Grid item>
+                  <Grid>
                     <Tooltip
                       title={collapse ? 'Expand' : 'Collapse'}
                       placement='right'
@@ -122,14 +122,14 @@ function HeroBrowserFrame(props) {
                       </IconButton>
                     </Tooltip>
                   </Grid>
-                  <Grid item>
+                  <Grid>
                     <ClickableTag element={element} />
                   </Grid>
                 </Grid>
               </Grid>
-              <Grid item>
+              <Grid>
                 <Grid container flexWrap='nowrap' columnSpacing={0.5}>
-                  {/* <Grid item>
+                  {/* <Grid>
                     <Tooltip
                       title='Rearrange'
                       placement='right'
@@ -141,7 +141,7 @@ function HeroBrowserFrame(props) {
                       </IconButton>
                     </Tooltip>
                   </Grid> */}
-                  {/* <Grid item>
+                  {/* <Grid>
                   <Tooltip
                     title='Jump to Parent'
                     placement='right'
@@ -153,7 +153,7 @@ function HeroBrowserFrame(props) {
                     </IconButton>
                   </Tooltip>
                 </Grid> */}
-                  <Grid item>
+                  <Grid>
                     <Tooltip
                       title='Close'
                       placement='right'

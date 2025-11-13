@@ -32,7 +32,7 @@ const HomePage = () => {
   return (
     <BaseView>
       <Grid container marginTop={2} marginX={2} direction='column' rowSpacing={2}>
-        <Grid item>
+        <Grid>
           <Autocomplete
             disablePortal
             options={selectOptions}
@@ -44,7 +44,7 @@ const HomePage = () => {
             noOptionsText='Hero not found. Make sure to exclude spaces or symbols'
           />
         </Grid>
-        <Grid item>
+        <Grid>
           {xml && (
             <HeroBrowser catalog={xml} />
           )}

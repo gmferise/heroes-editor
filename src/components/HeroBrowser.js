@@ -165,7 +165,7 @@ function HeroBrowser(props) {
 
   return (
     <Grid container direction='column' flexWrap='nowrap' rowSpacing={2}>
-      <Grid item>
+      <Grid>
         <Autocomplete
           disablePortal
           options={selectOptions}
@@ -176,14 +176,14 @@ function HeroBrowser(props) {
           noOptionsText='Entry not found'
         />
       </Grid>
-      <Grid item>
+      <Grid>
         <Grid container flexWrap='nowrap' columnSpacing={2}>
           <HeroBrowserContext.Provider value={browser}>
             {browserData.map((panel, panelIndex) => (
-              <Grid item key={`hero-browser-panel-${panelIndex}`}>
+              <Grid key={`hero-browser-panel-${panelIndex}`}>
                 <Grid container direction='column' flexWrap='nowrap' rowSpacing={1}>
                   {panel.map((frame, stackIndex) => (
-                    <Grid item key={`hero-browser-frame-${frame.element.tagName}-${frame.element.id}`}>
+                    <Grid key={`hero-browser-frame-${frame.element.tagName}-${frame.element.id}`}>
                       <HeroBrowserFrame
                         {...frame}
                         panelIndex={panelIndex}
