@@ -1,13 +1,9 @@
-import React, { useEffect, useCallback, useMemo, useContext, useRef, useState } from 'react';
+import React, { useCallback, useMemo, useContext, useState } from 'react';
 import { Grid, Box, Typography, Button, Popover } from '@mui/material';
 
 import { styled } from '@mui/system';
 import HeroBrowserContext from './HeroBrowserContext';
 import HeroFrameContext from './HeroFrameContext';
-
-const RelativeWrapper = styled(Box)(() => ({
-  position: 'relative',
-}));
 
 const Indent = styled(Box)(({ theme }) => ({
   paddingLeft: theme.spacing(2),

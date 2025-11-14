@@ -49,11 +49,18 @@ function HeroBrowser(props) {
       // Logic for an existing element
       const existingStackIndex = prevPanel.findIndex((frame) => `${frame.element.tagName}#${frame.element.id}` === `${element.tagName}#${element.id}`);
       if (existingStackIndex !== -1) {
-        return prev.map((panel, currentPanelIndex) => panel.map((frame, currentStackIndex) => (
-          currentPanelIndex === newPanelIndex && currentStackIndex === existingStackIndex
-            ? { ...frame, scrollIntoView: true }
-            : frame
-        )));
+        return prev.map((panel, currentPanelIndex) => panel.map((frame, currentStackIndex) => {
+          // View this frame
+          if (currentPanelIndex === newPanelIndex && currentStackIndex === existingStackIndex) {
+            return { ...frame, scrollIntoView: true };
+          }
+          // Add new rels for clicked parent frame
+          if (currentPanelIndex === fromPanelIndex && currentStackIndex === fromStackIndex) {
+            return { ...frame, rels: [...frame.rels, { toPanelIndex: newPanelIndex, toStackIndex: existingStackIndex }] };
+          }
+          // Otherwise no change
+          return frame;
+        }));
       }
 
       // Add a new element
@@ -86,31 +93,64 @@ function HeroBrowser(props) {
     return [newPanelIndex, newStackIndex];
   }, [setBrowserData]);
 
-  const prepareToCloseFrame = useCallback((panelIndex, stackIndex, enable) => {
+  const prepareToCloseFrame = useCallback((deletePanelIndex, deleteStackIndex, enable) => {
     setBrowserData((prev) => {
+      // Which coords to change
       const updates = prev.map((panel) => panel.map(() => null));
-      const rels = [...prev[panelIndex][stackIndex].rels];
+      // Traverse rels, starting with given coords
+      const rels = [...prev[deletePanelIndex][deleteStackIndex].rels];
       while (rels.length > 0) {
         const cur = rels[0];
+        // Set prepareToDelete
         updates[cur.toPanelIndex][cur.toStackIndex] = enable;
         rels.push(...prev[cur.toPanelIndex][cur.toStackIndex].rels);
         rels.shift();
       }
-      return prev.map((panel, i) => panel.map((frame, j) => updates[i][j] === null ? frame : ({ ...frame, parentCloseIntent: updates[i][j] })));
+      // Update only necessary frames
+      return prev.map((panel, panelIndex) => panel.map((frame, stackIndex) => (
+        updates[panelIndex][stackIndex] === null
+          ? frame
+          : ({ ...frame, parentCloseIntent: updates[panelIndex][stackIndex] })
+      )));
     });
   }, [setBrowserData]);
 
-  const closeFrame = useCallback((panelIndex, stackIndex) => {
+  const closeFrame = useCallback((deletePanelIndex, deleteStackIndex) => {
     setBrowserData((prev) => {
+      // Which coords to delete
       const toDelete = prev.map((panel) => panel.map(() => false));
-      const rels = [...prev[panelIndex][stackIndex].rels];
+      // Include provided coords
+      toDelete[deletePanelIndex][deleteStackIndex] = true;
+      // Traverse rels, starting with given coords
+      const rels = [...prev[deletePanelIndex][deleteStackIndex].rels];
       while (rels.length > 0) {
         const cur = rels[0];
+        // Mark for deletion
         toDelete[cur.toPanelIndex][cur.toStackIndex] = true;
         rels.push(...prev[cur.toPanelIndex][cur.toStackIndex].rels);
         rels.shift();
       }
-      return /* IMPLEMENT */;
+      // Filter out deleted coords
+      return prev.reduce((panelAcc, panel, panelIndex) => {
+        const newPanel = panel.reduce((frameAcc, frame, stackIndex) => {
+          const newFrame = {
+            ...frame,
+            // Filter out rels for deleted coords
+            rels: frame.rels.reduce((relAcc, rel) => {
+              if (toDelete[rel.toPanelIndex][rel.toStackIndex]) return [...relAcc];
+              // Move rel coordinates upwards if frames above them were deleted
+              return [...relAcc, {
+                ...rel,
+                toStackIndex: rel.toStackIndex - toDelete[rel.toPanelIndex].reduce((offsetSum, deleted, deletedStackIndex) => (
+                  offsetSum + (deleted && deletedStackIndex < rel.toStackIndex)
+                ), 0),
+              }];
+            }, []),
+          };
+          return toDelete[panelIndex][stackIndex] ? [...frameAcc] : [...frameAcc, newFrame];
+        }, []);
+        return newPanel.length > 0 ? [...panelAcc, newPanel] : [...panelAcc];
+      }, []);
     });
   }, [setBrowserData]);
 
@@ -159,6 +199,7 @@ function HeroBrowser(props) {
     searchCatalog,
     addFrame,
     prepareToCloseFrame,
+    closeFrame,
     scrollFrameIntoView,
     forceCollapseAll,
   });

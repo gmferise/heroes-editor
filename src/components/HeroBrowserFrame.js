@@ -2,8 +2,6 @@ import React, { useState, useEffect, useCallback, useMemo, useContext } from 're
 import { Grid, Box, IconButton, Tooltip, Collapse } from '@mui/material';
 import { styled } from '@mui/system';
 import CloseIcon from '@mui/icons-material/Close';
-import SwapVertIcon from '@mui/icons-material/SwapVert';
-import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 
@@ -46,6 +44,7 @@ function HeroBrowserFrame(props) {
   const {
     forceCollapseAll,
     prepareToCloseFrame,
+    closeFrame,
     scrollFrameIntoView,
   } = useContext(HeroBrowserContext);
 
@@ -69,6 +68,9 @@ function HeroBrowserFrame(props) {
     setCloseIntent(false);
     prepareToCloseFrame(panelIndex, stackIndex, false);
   }, [setCloseIntent, prepareToCloseFrame, panelIndex, stackIndex]);
+  const handleClose = useCallback(() => {
+    closeFrame(panelIndex, stackIndex);
+  }, [closeFrame, panelIndex, stackIndex]);
 
   // Rendering all the content is slow
   // Memoize to prevent unnecessary re-renders
@@ -166,6 +168,7 @@ function HeroBrowserFrame(props) {
                         sx={{ transition: 'color ease 0.2s' }}
                         onMouseEnter={prepareToClose}
                         onMouseLeave={unprepareToClose}
+                        onClick={handleClose}
                       >
                         <CloseIcon />
                       </IconButton>
