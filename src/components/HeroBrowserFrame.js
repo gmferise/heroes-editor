@@ -93,13 +93,13 @@ function HeroBrowserFrame(props) {
       setFrameBorderPink(true);
       setTimeout(() => {
         setFrameBorderPink(false);
-      }, 750);
+      }, 1500);
     }
   }, [scrollIntoView, panelIndex, stackIndex, setFrameBorderPink]);
 
   return (
     <HeroFrameContext.Provider value={frameLocation}>
-      <Frame ref={ref} frameBorderRed={frameBorderRed} frameBorderPink={frameBorderPink}>
+      <Frame frameBorderRed={frameBorderRed} frameBorderPink={frameBorderPink}>
         <Grid container direction='column' flexWrap='nowrap'>
           <Grid>
             <Grid container flexWrap='nowrap' alignItems='center' justifyContent='space-between' columnSpacing={2}>
@@ -124,7 +124,7 @@ function HeroBrowserFrame(props) {
                       </IconButton>
                     </Tooltip>
                   </Grid>
-                  <Grid>
+                  <Grid ref={ref}>
                     <ClickableTag element={element} />
                   </Grid>
                 </Grid>
