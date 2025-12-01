@@ -2649,7 +2649,7 @@
         <AffectedByOverdrive value="1" />
       </Modifications>
       <Modifications>
-        <Catalog value="Validator" />
+        <Catalog value="Behavior" />
         <Entry value="KerriganAssimilationShield" />
         <Field value="DamageResponse.ModifyLimit" />
         <Value value="0.040000" />

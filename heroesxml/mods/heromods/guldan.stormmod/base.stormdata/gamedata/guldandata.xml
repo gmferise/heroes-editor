@@ -215,6 +215,11 @@
     <TokenId value="GuldanRampantHellfireTokenCounter" />
     <Scale value="0.12" />
   </CAccumulatorToken>
+  <CAccumulatorToken id="GuldanHungerForPowerTokenAccumulator" parent="BaseAccumulator">
+    <TokenId value="GuldanHungerForPowerTokenCount" />
+    <UnitSource Value="Caster" />
+    <Scale value="0.3334" />
+  </CAccumulatorToken>
   <CActorSound id="GuldanCorruptionCastSound2" parent="SoundOneShot">
     <On Terms="Abil.GuldanCorruption.SourceCastStart" Send="Create" />
     <Sound value="GuldanBase_VOX_CastingW" />
@@ -1152,6 +1157,10 @@
     <InitialEffect value="GuldanHungerForPowerApplyHealingReductionBehavior" />
     <FinalEffect value="GuldanHungerForPowerRemoveHealingReductionBehavior" />
   </CBehaviorBuff>
+  <CBehaviorTokenCounter id="GuldanHungerForPowerTokenCount" parent="StormGenericToken">
+    <Max value="1" />
+    <Init value="1" />
+  </CBehaviorTokenCounter>
   <CBehaviorBuff id="GuldanLifeTapHungerforPowerHealingReductionBehavior">
     <Alignment value="Positive" />
     <BehaviorFlags index="Permanent" value="1" />
@@ -1648,10 +1657,10 @@
   <CEffectCreateHealer id="GuldanDrainLifeCreateHealer" parent="StormSelfOnlyHealingSpell">
     <ValidatorArray value="NoJunglePassiveTarget" />
     <ImpactUnit Value="Caster" />
-    <RechargeVitalRate value="47" />
+    <RechargeVitalRate value="47">
+      <AccumulatorArray value="GuldanHungerForPowerTokenAccumulator" />
+    </RechargeVitalRate>
     <MultiplicativeModifierArray index="HarvestLife" Validator="GuldanDrainLifeHarvestLifeCombine" Modifier="0.75" Crit="1" />
-    <MultiplicativeModifierArray index="HarvestLifeHFP" Validator="GuldanDrainLifeHarvestLifeHungerForPowerCombine" Modifier="0.2475" />
-    <MultiplicativeModifierArray index="HungerForPower" Validator="GuldanHasLifeTapHungerforPowerTalent" Modifier="0.3833" />
   </CEffectCreateHealer>
   <CEffectSet id="GuldanDrainLifeImpactSet">
     <EffectArray value="GuldanDrainLifeHealthFunnelApplyResponseBehavior" />
@@ -1901,7 +1910,9 @@
   <CEffectDamage id="GuldanCorruptionDoTDamage" parent="StormSpellDot">
     <Amount value="34" />
     <LeechValidator index="Life" value="GuldanCorruptionEchoedCorruptionComplete" />
-    <LeechFraction index="Life" value="0.5" />
+    <LeechFraction index="Life" value="0.5">
+      <AccumulatorArray value="GuldanHungerForPowerTokenAccumulator" />
+    </LeechFraction>
   </CEffectDamage>
   <CEffectCreatePersistent id="GuldanRainOfDestructionCreationPersistent">
     <Flags index="RandomOffset" value="1" />
@@ -2074,9 +2085,10 @@
   </CEffectSet>
   <CEffectCreateHealer id="GuldanHealthstoneCreateHealer" parent="StormSelfOnlyHealingSpellPercent">
     <ImpactUnit Value="Caster" />
-    <RechargeVitalFraction value="0.25" />
+    <RechargeVitalFraction value="0.25">
+      <AccumulatorArray value="GuldanHungerForPowerTokenAccumulator" />
+    </RechargeVitalFraction>
     <FinalEffect value="GuldanLifeTapDarknessWithinRemoveBehavior" />
-    <MultiplicativeModifierArray index="HungerForPower" Validator="GuldanHasLifeTapHungerforPowerTalent" Modifier="0.3833" />
   </CEffectCreateHealer>
   <CEffectApplyBehavior id="GuldanHorrifyHauntVulnerableApplyBehavior">
     <ValidatorArray value="GuldanHasHorrifyHauntTalent" />
@@ -2124,8 +2136,9 @@
   </CEffectDamage>
   <CEffectCreateHealer id="GuldanConsumeSoulCreateHealer" parent="StormSelfOnlyHealingSpell">
     <ImpactUnit Value="Caster" />
-    <RechargeVitalRate value="365" />
-    <MultiplicativeModifierArray index="HungerForPower" Validator="GuldanHasLifeTapHungerforPowerTalent" Modifier="0.3833" />
+    <RechargeVitalRate value="365">
+      <AccumulatorArray value="GuldanHungerForPowerTokenAccumulator" />
+    </RechargeVitalRate>
   </CEffectCreateHealer>
   <CEffectApplyBehavior id="GuldanCorruptionRuinousAfflictionApplyBehavior">
     <Chance value="0" />
@@ -2134,6 +2147,10 @@
   <CEffectDamage id="GuldanCorruptionRuinousAfflictionThreeHitDamage" parent="StormSpell">
     <Flags index="Crit" value="1" />
     <Amount value="268" />
+    <LeechValidator index="Life" value="GuldanCorruptionEchoedCorruptionComplete" />
+    <LeechFraction index="Life" value="0.5">
+      <AccumulatorArray value="GuldanHungerForPowerTokenAccumulator" />
+    </LeechFraction>
   </CEffectDamage>
   <CEffectSet id="GuldanCorruptionRuinousAfflictionImpactSet">
     <EffectArray value="GuldanCorruptionRuinousAfflictionThreeHitDamage" />
@@ -2211,6 +2228,10 @@
     <ValidatorArray value="GuldanHasCorruptionRuinousAfflictionTalent" />
     <ValidatorArray value="GuldanCorruptionRuinousAfflictionStackDummyBehaviorNE2" />
     <Amount value="78" />
+    <LeechValidator index="Life" value="GuldanCorruptionEchoedCorruptionComplete" />
+    <LeechFraction index="Life" value="0.5">
+      <AccumulatorArray value="GuldanHungerForPowerTokenAccumulator" />
+    </LeechFraction>
   </CEffectDamage>
   <CEffectModifyUnit id="GuldanDrainLifeCancelModifyCooldown">
     <ImpactUnit Value="Caster" />
@@ -2958,6 +2979,7 @@
     <Face value="GuldanLifeTapHungerforPower" />
     <RankArray>
       <BehaviorArray value="GuldanLifeTapHungerforPowerBehavior" />
+      <BehaviorArray value="GuldanHungerForPowerTokenCount" />
     </RankArray>
   </CTalent>
   <CTalent id="GuldanLifeTapImprovedLifeTap">
@@ -3102,6 +3124,7 @@
   </CValidatorUnitCompareBehaviorCount>
   <CValidatorUnitCompareBehaviorCount id="GuldanCorruptionEchoedCorruptionMilestoneGained">
     <WhichUnit Value="Caster" />
+    <Compare value="GE" />
     <Value value="40" />
     <Behavior value="GuldanCorruptionEchoedCorruptionQuestToken" />
   </CValidatorUnitCompareBehaviorCount>

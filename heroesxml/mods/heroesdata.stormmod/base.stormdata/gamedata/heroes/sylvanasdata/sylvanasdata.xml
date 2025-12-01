@@ -1613,7 +1613,7 @@
     <Behavior value="SylvanasUnfurlingShadowsQuestMilestone" />
   </CEffectApplyBehavior>
   <CEffectSwitch id="SylvanasLostSoulModifyCooldownSwitch">
-    <ValidatorArray value="SylvanasTargetHas3StacksOfBlackArrowsStackingBehaviorAndTargetIsNotMinionOrHero" />
+    <ValidatorArray value="SylvanasTargetHas3StacksOfBlackArrowsStackingBehaviorAndTargetIsValidUnitType" />
     <ValidatorArray value="CasterNotBlindedAndTargetNotEvading" />
     <ValidatorArray value="HasSylvanasShadowDaggerLostSoul" />
     <CaseArray Validator="TargetIsHero" Effect="SylvanasShadowDaggerLostSoulModifyCooldownHero" />
@@ -2008,7 +2008,7 @@
     <VitalFractionMax index="Life" value="0.01" />
   </CEffectDamage>
   <CEffectModifyTokenCount id="SylvanasShadowDaggerUnfurlingShadowsModifyTokenCount" parent="BaseEffectModifyTokenCount">
-    <ValidatorArray value="SylvanasTargetHas3StacksOfBlackArrowsStackingBehaviorAndTargetIsNotMinionOrHero" />
+    <ValidatorArray value="SylvanasTargetHas3StacksOfBlackArrowsStackingBehaviorAndTargetIsValidUnitType" />
     <EffectCategory index="Quest" value="1" />
     <TokenId value="SylvanasShadowDaggerUnfurlingShadowsQuestToken" />
   </CEffectModifyTokenCount>
@@ -4194,6 +4194,11 @@
   <CUnit id="SylvanasSkeletonAttackMissile" parent="MISSILE_INVULNERABLE">
     <Mover value="HeroMissileSpeed22Ribbon" />
   </CUnit>
+  <CValidatorCombine id="SylvanasBlackArrowsLeechPinnacleCombineHero">
+    <Type value="And" />
+    <CombineArray value="SylvanasBlackArrowsLeechPinnacleCombine" />
+    <CombineArray value="TargetIsHeroAndNotStasis" />
+  </CValidatorCombine>
   <CValidatorCombine id="SylvanasDamageLeechCombine">
     <Type value="And" />
     <CombineArray value="SylvanasHasCompletedUnfurlingShadowsQuestOrHasLifeDrainTalent" />
