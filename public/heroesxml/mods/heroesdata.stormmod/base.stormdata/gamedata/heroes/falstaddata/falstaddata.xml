@@ -3306,6 +3306,14 @@
       <BehaviorArray value="FalstadFrequentFlyerTokenCounter" />
     </RankArray>
     <QuestData StackBehavior="FalstadFrequentFlyerTokenCounter" />
+    <AbilityModificationArray>
+      <Modifications>
+        <Type value="FlatModification" />
+        <Catalog value="Effect" />
+        <Entry value="FalstadWeaponDamage" />
+        <Field value="FlatModifierArray[FrequentFlyer].Modifier" />
+      </Modifications>
+    </AbilityModificationArray>
     <Active value="1" />
   </CTalent>
   <CTalent id="FalstadLightningRodDishonorableDischarge">
